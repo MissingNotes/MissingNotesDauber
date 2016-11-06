@@ -16,6 +16,10 @@
     "url": "https://github.com/MissingNotes/MissingNotesDauber/issues"
   },
   "homepage": "https://github.com/MissingNotes/MissingNotesDauber#readme",
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.7",
