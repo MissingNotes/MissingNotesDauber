@@ -1,0 +1,32 @@
+.btn {
+  background-color: rgb(53, 59, 69);
+  background-image: linear-gradient(rgb(53, 63, 75), rgb(53, 59, 69));
+  border: 1px solid rgb(24, 26, 31);
+  border-radius: 3px;
+  color: rgb(157, 165, 180);
+  display: flex;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: BlinkMacSystemFont, 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+  height: 22px;
+  width: 70px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.btn:hover {
+  color: #d7dae0;
+  background-color: #3a3f4b;
+  background-image: linear-gradient(#3e4451, #3a3f4b);
+}
+
+.btn:focus {
+  color: #d7dae0;
+  background-color: #3a3f4b;
+  background-image: linear-gradient(#3e4451, #3a3f4b);
+}
+
+.btn:active {
+  background: #2c313a;
+}
