@@ -10,7 +10,7 @@ module.exports = {
   entry: {
     'missing-notes': [
       'babel-polyfill',
-      './src/main.jsx'
+      './src/index.js'
     ],
   },
   output: {
