@@ -79,10 +79,8 @@ export default class Toolbar extends React.PureComponent {
 
       // data
       let myDate = new Date()
-      textNode.data = myDate.toLocaleString()
+      textNode.date = myDate.toLocaleString()
 
-      localStorage.setItem(textNode.id, JSON.stringify(textNode))
-      console.log(localStorage)
       // comments
     }
 
