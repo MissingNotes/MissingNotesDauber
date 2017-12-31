@@ -1,8 +1,10 @@
 import React from 'react'
 import styles from './style.css'
 import Button from '../button'
+import { connect } from 'dva'
+import Highlight from '../highlight'
 
-export default class Toolbar extends React.PureComponent {
+class Toolbar extends React.PureComponent {
   constructor(props) {
     super(props)
     this.handleHighlight = this.handleHighlight.bind(this)
@@ -15,13 +17,16 @@ export default class Toolbar extends React.PureComponent {
   componentDidMount() {
     // TODO: 监听适当的DOM事件，用户选择文字后，提取所需的信息
   }
+
   handleHighlight(event) {
     this.setState({mode: 'highlight'})
     document.body.addEventListener('mouseup', this.handleMouseup)
   }
+
   handleAddStickyNode() {
     this.setState({mode: 'addnode'})
   }
+
   handleMouseup() {
     let win = event.view
     let selection = win.getSelection()
@@ -30,38 +35,37 @@ export default class Toolbar extends React.PureComponent {
     }
 
     let range = selection.getRangeAt(0)
-    let commonAncestorNode = range.commonAncestorContainer
-    if (!commonAncestorNode) {
-      console.log("commonAncestorNode is undefind")
-    }
-    // nodeChian
-    let commonAncestorElement = commonAncestorNode
-    let textNode = {}
-    let nodeChian = []
-
-    while (commonAncestorElement.nodeType !== Node.ELEMENT_NODE) {
-      commonAncestorElement = commonAncestorElement.parentNode
-      if (!commonAncestorElement) {
-        console.log("commonAncestorElement is undefind")
-      }
-    }
-     let i = 0
-     while (commonAncestorElement.parentNode) {
-      nodeChian[i] = new String ()
-      nodeChian[i] = commonAncestorElement.nodeName.toLocaleLowerCase()
-      if(commonAncestorElement.id){
-        nodeChian[i] = nodeChian[i] + "#" + commonAncestorElement.id
-      }
-      if(commonAncestorElement.classList.value){
-        commonAncestorElement.classList.forEach(className => nodeChian[i] = nodeChian[i] + "." +className)
-      }
-      commonAncestorElement = commonAncestorElement.parentNode
-      i = i + 1
-     }
-    textNode.nodeChian = nodeChian
-    // comtent,fhtno,lhtno
-
     if (!range.collapsed) {
+      let commonAncestorNode = range.commonAncestorContainer
+      if (!commonAncestorNode) {
+        console.log("commonAncestorNode is undefind")
+      }
+      // nodeChian
+      let commonAncestorElement = commonAncestorNode
+      let textNode = {}
+      let nodeChian = []
+
+      while (commonAncestorElement.nodeType !== Node.ELEMENT_NODE) {
+        commonAncestorElement = commonAncestorElement.parentNode
+        if (!commonAncestorElement) {
+          console.log("commonAncestorElement is undefind")
+        }
+      }
+      let i = 0
+      while (commonAncestorElement.parentNode) {
+        nodeChian[i] = new String()
+        nodeChian[i] = commonAncestorElement.nodeName.toLocaleLowerCase()
+        if (commonAncestorElement.id) {
+          nodeChian[i] = nodeChian[i] + "#" + commonAncestorElement.id
+        }
+        if (commonAncestorElement.classList.value) {
+          commonAncestorElement.classList.forEach(className => nodeChian[i] = nodeChian[i] + "." + className)
+        }
+        commonAncestorElement = commonAncestorElement.parentNode
+        i = i + 1
+      }
+      textNode.nodeChian = nodeChian
+      // comtent,fhtno,lhtno
 
       let nodeComment = []
 
@@ -73,18 +77,22 @@ export default class Toolbar extends React.PureComponent {
         textNode.content = range.toString()
       }
 
-
       // id
       textNode.id = (Date.now()).toString(32)
 
       // data
       let myDate = new Date()
       textNode.date = myDate.toLocaleString()
+      console.log(textNode)
 
       // comments
+
+      // dispatch
+      this.props.dispatch({
+        type: 'textNode/add',
+        payload: textNode,
+      })
     }
-
-
   }
 
   render() {
@@ -97,7 +105,10 @@ export default class Toolbar extends React.PureComponent {
         <Button onClick={this.handleAddStickyNode}>
           添加注释
         </Button>
+        <Highlight></Highlight>
       </div>
     )
   }
 }
+
+export default connect()(Toolbar)
