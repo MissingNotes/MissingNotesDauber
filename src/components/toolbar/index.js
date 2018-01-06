@@ -14,9 +14,6 @@ class Toolbar extends React.PureComponent {
       mode: 'none'
     }
   }
-  componentDidMount() {
-    // TODO: 监听适当的DOM事件，用户选择文字后，提取所需的信息
-  }
 
   handleHighlight(event) {
     this.setState({mode: 'highlight'})
@@ -40,10 +37,10 @@ class Toolbar extends React.PureComponent {
       if (!commonAncestorNode) {
         console.log("commonAncestorNode is undefind")
       }
-      // nodeChian
+      // nodeChain
       let commonAncestorElement = commonAncestorNode
       let textNode = {}
-      let nodeChian = []
+      let nodeChain = []
 
       while (commonAncestorElement.nodeType !== Node.ELEMENT_NODE) {
         commonAncestorElement = commonAncestorElement.parentNode
@@ -53,18 +50,18 @@ class Toolbar extends React.PureComponent {
       }
       let i = 0
       while (commonAncestorElement.parentNode) {
-        nodeChian[i] = new String()
-        nodeChian[i] = commonAncestorElement.nodeName.toLocaleLowerCase()
+        nodeChain[i] = new String()
+        nodeChain[i] = commonAncestorElement.nodeName.toLocaleLowerCase()
         if (commonAncestorElement.id) {
-          nodeChian[i] = nodeChian[i] + "#" + commonAncestorElement.id
+          nodeChain[i] = nodeChain[i] + "#" + commonAncestorElement.id
         }
         if (commonAncestorElement.classList.value) {
-          commonAncestorElement.classList.forEach(className => nodeChian[i] = nodeChian[i] + "." + className)
+          commonAncestorElement.classList.forEach(className => nodeChain[i] = nodeChain[i] + "." + className)
         }
         commonAncestorElement = commonAncestorElement.parentNode
         i = i + 1
       }
-      textNode.nodeChian = nodeChian
+      textNode.nodeChain = nodeChain
       // comtent,fhtno,lhtno
 
       let nodeComment = []
@@ -105,7 +102,7 @@ class Toolbar extends React.PureComponent {
         <Button onClick={this.handleAddStickyNode}>
           添加注释
         </Button>
-        <Highlight></Highlight>
+        <Highlight />
       </div>
     )
   }
