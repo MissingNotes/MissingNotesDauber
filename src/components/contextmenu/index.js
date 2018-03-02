@@ -4,8 +4,10 @@ import {connect} from 'dva'
 import styles from './style.css'
 import highlightStyles from '../../highLight.css'
 
-const contextMenuRoot = document.getElementById('context-menu')
-const taskItemClassName = highlightStyles.highlightNote
+// const contextMenuRoot = document.getElementById('context-menu')
+const highlightNoteClassName = highlightStyles.highlightNote
+const contextMenuDelete = styles.contextMenuDelete
+let highlightNote
 class Contextmenu extends React.Component {
   constructor(props){
     super(props)
@@ -19,13 +21,15 @@ class Contextmenu extends React.Component {
   // 监听高亮信息的右键事件，弹出删除面板
   componentDidMount() {
     // this.highlight(this.props.textNodeMap)
-    contextMenuRoot.appendChild(this.menu)
+    document.body.appendChild(this.menu)
     this.contextListener()
+    this.clickListener()
+    this.keyupListener()
   }
 
-  componentWillUpdate({ textNodeMap }) {
-    // this.highlight(textNodeMap)
-  }
+  // componentWillUpdate({ textNodeMap }) {
+  //   this.highlight(textNodeMap)
+  // }
 
   componentWillUnmount() {
     modalRoot.removeChild(this.menu);
@@ -112,15 +116,14 @@ class Contextmenu extends React.Component {
   // 监听右键事件，弹出删除面板
   contextListener = () => {
     document.addEventListener( "contextmenu", (e) => {
-      let taskItemInContext = this.clickInsideElement( e, taskItemClassName );
+      highlightNote = this.clickInsideElement( e, highlightNoteClassName );
 
-      if ( taskItemInContext ) {
+      if ( highlightNote ) {
         e.preventDefault();
-        console.log(e)
         this.toggleMenuOn();
         this.positionMenu(e);
       } else {
-        taskItemInContext = null;
+        hilightNote = null;
         this.toggleMenuOff();
       }
     });
@@ -128,6 +131,32 @@ class Contextmenu extends React.Component {
 
   // 1. 左键单击时退出面板，
   // 2. 左键单击右键面板时，响应删除函数功能。
+  clickListener = () => {
+    document.addEventListener('click', (e) => {
+      let clickItem = this.clickInsideElement(e,contextMenuDelete)
+      if (clickItem){
+        e.preventDefault()
+        var highlightNoteId = highlightNote.classList[highlightNote.classList.length - 1]
+        this.props.dispatch({
+          type: 'textNode/remove',
+          payload: highlightNoteId
+        })
+      } else {
+        var button = e.which || e.Button
+        if (button === 1 ){
+          this.toggleMenuOff()
+        }
+      }
+    })
+  }
+
+  keyupListener = () => {
+    window.onkeyup = (e) => {
+      if (e.keyCode === 27) {
+        this.toggleMenuOff()
+      }
+    }
+  }
 
   toggleMenuOn = () => {
     this.setState({
@@ -143,10 +172,11 @@ class Contextmenu extends React.Component {
     this.menu.classList.remove(styles.contextMenuActive)
   }
 
+
   render() {
     return ReactDOM.createPortal(
       <div>
-        <button>Delete</button>
+        <button className={styles.contextMenuDelete}>Delete</button>
       </div>,
       this.menu,
     )
@@ -154,4 +184,4 @@ class Contextmenu extends React.Component {
 }
 
 
-export default Contextmenu
+export default connect()(Contextmenu)

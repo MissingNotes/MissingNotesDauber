@@ -29,7 +29,7 @@ export default function highlight(state) {
         let startOffset = textNode.startOffset
         let endOffset = textNode.endOffset
         if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
-          commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(content, '<span class="' + styles.highlightNote + '">' + content + '</span>')
+          commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(content, '<span class="' + styles.highlightNote + ' '+ textNode.id +'">' + content + '</span>')
         }
       })
     }

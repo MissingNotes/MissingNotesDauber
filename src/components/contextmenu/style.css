@@ -9,6 +9,7 @@
 .contextMenuActive {
   display: block;
 }
-/* .deleteNote {
-  color: pink;
-} */
+.contextMenuDelete {
+  background-color: pink;
+  color: white;
+}

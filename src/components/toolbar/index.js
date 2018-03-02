@@ -90,7 +90,6 @@ class Toolbar extends React.PureComponent {
         type: 'textNode/save',
         payload: {
           [textNode.id]: textNode
-          // textNode
         }
       })
     }

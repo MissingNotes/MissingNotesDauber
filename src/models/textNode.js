@@ -22,27 +22,11 @@ type Model = {
   namespace: string,
   state: State
 }
-// let textNodeMap =
 
 let model : Model = {
   namespace: 'textNode',
   state: {
     textNodeMap: {},
-    // textNodeMap: (function(){
-    //   const textNodeMapString = localStorage.getItem('textNodeMap')
-    //   let textNodeMap = {}
-    //   if (textNodeMapString) {
-    //     try {
-    //       textNodeMap = JSON.parse(textNodeMapString)
-    //     } catch (e) {
-    //       localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
-    //     }
-    //   } else {
-    //     localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
-    //   }
-    //   return textNodeMap
-    // }()),
-    // total: undefined,
   },
   reducers: {
     save(state, {payload: values} : { payload: TextNodeMap }){
@@ -89,5 +73,4 @@ let model : Model = {
     }
   }
 }
-// localStorage.setItem('textNodeMap', JSON.stringify())
 export default model
