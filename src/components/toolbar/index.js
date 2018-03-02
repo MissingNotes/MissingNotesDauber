@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './style.css'
 import Button from '../button'
-import { connect } from 'dva'
-import Highlight from '../highlight'
+import {connect} from 'dva'
+import Contextmenu from '../contextmenu'
 
 class Toolbar extends React.PureComponent {
   constructor(props) {
@@ -82,12 +82,16 @@ class Toolbar extends React.PureComponent {
       textNode.date = myDate.toLocaleString()
       console.log(textNode)
 
+
       // comments
 
       // dispatch
       this.props.dispatch({
-        type: 'textNode/add',
-        payload: textNode,
+        type: 'textNode/save',
+        payload: {
+          [textNode.id]: textNode
+          // textNode
+        }
       })
     }
   }
@@ -102,7 +106,7 @@ class Toolbar extends React.PureComponent {
         <Button onClick={this.handleAddStickyNode}>
           添加注释
         </Button>
-        <Highlight />
+        <Contextmenu/>
       </div>
     )
   }

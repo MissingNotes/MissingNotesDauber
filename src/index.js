@@ -3,9 +3,11 @@ import React from 'react'
 import './index.css'
 import ReactDOM from 'react-dom'
 import Toolbar from './components/toolbar/index'
-
+import highlight from './highLight'
 // 1. Initialize
-const app = dva()
+const app = dva({
+  onStateChange: highlight,
+})
 
 // 2. Plugins
 

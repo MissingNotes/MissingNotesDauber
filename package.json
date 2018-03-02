@@ -20,10 +20,11 @@
   "homepage": "https://github.com/MissingNotes/MissingNotesDauber#readme",
   "dependencies": {
     "classnames": "^2.2.5",
-    "dva": "^2.1.0",
+    "dva": "^2.2.0-beta.2",
     "immutable": "^3.8.1",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-redux": "^4.0.8",
     "redux": "^3.6.0"
   },
   "devDependencies": {

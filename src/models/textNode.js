@@ -1,6 +1,6 @@
 // @flow
 
-type TextNodeObject = {
+type TextNode = {
   id: string,
   content: string,
   // comment,
@@ -10,61 +10,76 @@ type TextNodeObject = {
   data: string
 }
 
-type TextNodeList = {
-  [ID : string]: TextNodeObject
+type TextNodeMap = {
+  [ID : string]: TextNode
 }
 type State = {
-  textNodeList:
-    ? TextNodeList,
+  textNodeMap:
+    ? TextNodeMap,
   // total: ?number,
 }
 type Model = {
   namespace: string,
   state: State
 }
+// let textNodeMap =
 
 let model : Model = {
   namespace: 'textNode',
   state: {
-    textNodeList: {},
+    textNodeMap: {},
+    // textNodeMap: (function(){
+    //   const textNodeMapString = localStorage.getItem('textNodeMap')
+    //   let textNodeMap = {}
+    //   if (textNodeMapString) {
+    //     try {
+    //       textNodeMap = JSON.parse(textNodeMapString)
+    //     } catch (e) {
+    //       localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
+    //     }
+    //   } else {
+    //     localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
+    //   }
+    //   return textNodeMap
+    // }()),
     // total: undefined,
   },
   reducers: {
-    save(state, {payload: textNodeList}) {
+    save(state, {payload: values} : { payload: TextNodeMap }){
+      if(Object.keys(values).length === 0) {
+        return state
+      }
+      let textNodeMap = { ...state.textNodeMap, ...values  }
       return {
         ...state,
-        textNodeList
+        textNodeMap
       }
     }
   },
   effects: {
-    // * add({ payload: values }, { put, select }){
-    * add({payload: values} : {
-      payload: TextNodeObject
-    }, {put, select}) {
-      let {textNode: {
-          textNodeList
-        }} = yield select()      
-        let textNodeListNew = { ...textNodeList, [values.id]: values  }
-      // textNodeList[values.id] = values
-      // const total = yield select(state => state.total)
-      // const totalNew = total + 1
-      localStorage.setItem('textNodeList', JSON.stringify(textNodeListNew))
-      yield put({type: 'save', payload: textNodeListNew})
-    },
+    // * add({payload: values} : {
+    //   payload: TextNode
+    // }, {put, select}) {
+    //   let {textNode: {
+    //       textNodeMap
+    //     }} = yield select()
+    //     let textNodeMapNew = { ...textNodeMap, [values.id]: values  }
+    //   localStorage.setItem('textNodeMap', JSON.stringify(textNodeMapNew))
+    //   yield put({type: 'save', payload: textNodeMapNew})
+    // },
     * fetch(action, {put}) {
-      const textNodeListString = localStorage.getItem('textNodeList')
-      let textNodeList = {}
-      if (textNodeListString) {
+      const textNodeMapString = localStorage.getItem('textNodeMap')
+      let textNodeMap = {}
+      if (textNodeMapString) {
         try {
-          textNodeList = JSON.parse(textNodeListString)
+          textNodeMap = JSON.parse(textNodeMapString)
         } catch (e) {
-          localStorage.setItem('textNodeList', JSON.stringify(textNodeList))
+          localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
         }
       } else {
-        localStorage.setItem('textNodeList', JSON.stringify(textNodeList))
+        localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
       }
-      yield put({type: 'save', payload: textNodeList})
+      yield put({type: 'save', payload: textNodeMap})
     },
     * remove() {}
   },
@@ -74,5 +89,5 @@ let model : Model = {
     }
   }
 }
-// localStorage.setItem('textNodeList', JSON.stringify())
+// localStorage.setItem('textNodeMap', JSON.stringify())
 export default model
