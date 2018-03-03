@@ -49,8 +49,6 @@ class Contextmenu extends React.Component {
   //     }
   //
   //     // 对parentNode里面的对应的数据进行高亮，用replace
-  //     // let startOffset = textNode.startOffset
-  //     // let endOffset = textNode.endOffset
   //     let content = textNode.content
   //     let startOffset = textNode.startOffset
   //     let endOffset = textNode.endOffset
@@ -136,7 +134,8 @@ class Contextmenu extends React.Component {
       let clickItem = this.clickInsideElement(e,contextMenuDelete)
       if (clickItem){
         e.preventDefault()
-        var highlightNoteId = highlightNote.classList[highlightNote.classList.length - 1]
+        let highlightNoteId = highlightNote.classList[highlightNote.classList.length - 1]
+        highlightNoteId = highlightNoteId.slice(5)
         this.props.dispatch({
           type: 'textNode/remove',
           payload: highlightNoteId

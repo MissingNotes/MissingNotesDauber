@@ -14,6 +14,12 @@ class Toolbar extends React.PureComponent {
       mode: 'none'
     }
   }
+  componentDidMount() {
+    this.props.dispatch({
+      type: 'textNode/toolbarOn',
+      payload: { toolbarOn: 1 }
+    })
+  }
 
   handleHighlight(event) {
     this.setState({mode: 'highlight'})

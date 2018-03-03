@@ -16,7 +16,7 @@ type TextNodeMap = {
 type State = {
   textNodeMap:
     ? TextNodeMap,
-  // total: ?number,
+  toolbarOn: ?number,
 }
 type Model = {
   namespace: string,
@@ -27,6 +27,7 @@ let model : Model = {
   namespace: 'textNode',
   state: {
     textNodeMap: {},
+    toolbarOn: 0,
   },
   reducers: {
     save(state, {payload: values} : { payload: TextNodeMap }){
@@ -38,6 +39,24 @@ let model : Model = {
         ...state,
         textNodeMap
       }
+    },
+    remove(state, { payload: id }) {
+      if (state.textNodeMap.hasOwnProperty(id)){
+        const newState = {
+          ...state,
+          textNodeMap: {
+            ...state.textNodeMap
+          }
+         }
+        delete newState.textNodeMap[id]
+        return newState
+      }
+      else {
+        return state
+      }
+    },
+    toolbarOn(state,  { payload: value }) {
+      return { ...state, ... value }
     }
   },
   effects: {
@@ -64,8 +83,7 @@ let model : Model = {
         localStorage.setItem('textNodeMap', JSON.stringify(textNodeMap))
       }
       yield put({type: 'save', payload: textNodeMap})
-    },
-    * remove() {}
+    }
   },
   subscriptions: {
     setup({dispatch, history}) {
