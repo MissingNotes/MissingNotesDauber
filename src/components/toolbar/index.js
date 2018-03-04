@@ -16,7 +16,7 @@ class Toolbar extends React.PureComponent {
   }
   componentDidMount() {
     this.props.dispatch({
-      type: 'textNode/toolbarOn',
+      type: 'highlight/toolbarOn',
       payload: { toolbarOn: 1 }
     })
   }
@@ -45,7 +45,7 @@ class Toolbar extends React.PureComponent {
       }
       // nodeChain
       let commonAncestorElement = commonAncestorNode
-      let textNode = {}
+      let highlightText = {}
       let nodeChain = []
 
       while (commonAncestorElement.nodeType !== Node.ELEMENT_NODE) {
@@ -67,35 +67,35 @@ class Toolbar extends React.PureComponent {
         commonAncestorElement = commonAncestorElement.parentNode
         i = i + 1
       }
-      textNode.nodeChain = nodeChain
+      highlightText.nodeChain = nodeChain
       // comtent,fhtno,lhtno
 
       let nodeComment = []
 
       if (commonAncestorNode.nodeType === Node.TEXT_NODE) {
-        textNode.startOffset = range.startOffset
-        textNode.endOffset = range.endOffset
+        highlightText.startOffset = range.startOffset
+        highlightText.endOffset = range.endOffset
         nodeComment = commonAncestorNode.nodeValue
-        // textNode.content = nodeComment.slice(nodeComment.indexOf(textNode.startOffset),nodeComment.indexOf(textNode.endOffset))
-        textNode.content = range.toString()
+        // highlightText.content = nodeComment.slice(nodeComment.indexOf(highlightText.startOffset),nodeComment.indexOf(highlightText.endOffset))
+        highlightText.content = range.toString()
       }
 
       // id
-      textNode.id = (Date.now()).toString(32)
+      highlightText.id = (Date.now()).toString(32)
 
       // data
       let myDate = new Date()
-      textNode.date = myDate.toLocaleString()
-      console.log(textNode)
+      highlightText.date = myDate.toLocaleString()
+      console.log(highlightText)
 
 
       // comments
 
       // dispatch
       this.props.dispatch({
-        type: 'textNode/save',
+        type: 'highlight/save',
         payload: {
-          [textNode.id]: textNode
+          [highlightText.id]: highlightText
         }
       })
     }
