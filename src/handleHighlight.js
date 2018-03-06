@@ -35,11 +35,11 @@ export default function handlehighlight(state) {
         highlightTextArray.forEach(function(highlightText) {
 
           // 找到高亮的数据所在的highlightText的父节点
-          let nodeChainArray = highlightText.nodeChain.slice()
-          let baseElement = document.querySelector(nodeChainArray.pop())
+          let cacSelectorArray = highlightText.cacSelector.slice()
+          let baseElement = document.querySelector(cacSelectorArray.pop())
           let commonAncestorNode = ''
-          while (nodeChainArray.length) {
-            commonAncestorNode = baseElement.querySelector(nodeChainArray.pop())
+          while (cacSelectorArray.length) {
+            commonAncestorNode = baseElement.querySelector(cacSelectorArray.pop())
             baseElement = commonAncestorNode
           }
 

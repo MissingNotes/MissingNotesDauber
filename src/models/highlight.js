@@ -1,48 +1,47 @@
+// @flow
 
+type HighlightText = {
+  text: string,
+  // The number of characters from the start of the `TextNode` to the start of
+  // highlighted text.
+  startOffset: number,
+  // The number of characters from the start of the `TextNode` to the end of
+  // highlighted text.
+  endOffset: number,
+  // sub selector from `Highlight#cacSelector`
+  subSelector: Array<string>,
+}
 
-// type HighlightText = {
-//   text: string,
-//   // The number of characters from the start of the `TextNode` to the start of
-//   // highlighted text.
-//   startOffset: number,
-//   // The number of characters from the start of the `TextNode` to the end of
-//   // highlighted text.
-//   endOffset: number,
-//   // sub selector from `Highlight#cacSelector`
-//   subSelector: Array<string>,
-// }
-//
-// type Highlight = {
-//   id: string,
-//   createTime: number,
-//   // Each `HighlightText` is corresponding to a DOM `TextNode` that is a leaf
-//   // node of the DOM `Element` specified by the `cacSelector`.
-//   texts: Array<HighlightText>,
-//   // `range.commonAncestorContainer` element's full selector from body element
-//   cacSelector: Array<string>,
-// }
-//
-// type HighlightMap = {
-//   [ID: string]: Highlight
-// }
-// type State = {
-//   highlightMap: ?HighlightMap,
-//   toolbarOn: ?number,
-// }
-// type Model = {
-//   namespace: string,
-//   state: State
-// }
+type Highlight = {
+  id: string,
+  createTime: number,
+  // Each `HighlightText` is corresponding to a DOM `TextNode` that is a leaf
+  // node of the DOM `Element` specified by the `cacSelector`.
+  texts: Array<HighlightText>,
+  // `range.commonAncestorContainer` element's full selector from body element
+  cacSelector: Array<string>,
+}
 
-// let model : Model = {
-let model = {
+type HighlightMap = {
+  [ID: string]: Highlight
+}
+type State = {
+  highlightMap: ?HighlightMap,
+  toolbarOn: ?number,
+}
+type Model = {
+  namespace: string,
+  state: State
+}
+
+let model : Model = {
   namespace: 'highlight',
   state: {
     highlightMap: {},
     toolbarOn: 0,
   },
   reducers: {
-    save(state, {payload: values} ){
+    save(state, {payload: values} : { payload: HighlightMap }){
       if(Object.keys(values).length === 0) {
         return state
       }

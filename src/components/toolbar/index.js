@@ -4,6 +4,9 @@ import Button from '../button'
 import {connect} from 'dva'
 import Contextmenu from '../contextmenu'
 
+let textNodes = []
+let highlightOn = 0
+
 class Toolbar extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -17,7 +20,9 @@ class Toolbar extends React.PureComponent {
   componentDidMount() {
     this.props.dispatch({
       type: 'highlight/toolbarOn',
-      payload: { toolbarOn: 1 }
+      payload: {
+        toolbarOn: 1
+      }
     })
   }
 
@@ -43,51 +48,17 @@ class Toolbar extends React.PureComponent {
       if (!commonAncestorNode) {
         console.log("commonAncestorNode is undefind")
       }
-      // nodeChain
-      let commonAncestorElement = commonAncestorNode
-      let highlightText = {}
-      let nodeChain = []
 
-      while (commonAncestorElement.nodeType !== Node.ELEMENT_NODE) {
-        commonAncestorElement = commonAncestorElement.parentNode
-        if (!commonAncestorElement) {
-          console.log("commonAncestorElement is undefind")
-        }
-      }
-      let i = 0
-      while (commonAncestorElement.parentNode) {
-        nodeChain[i] = new String()
-        nodeChain[i] = commonAncestorElement.nodeName.toLocaleLowerCase()
-        if (commonAncestorElement.id) {
-          nodeChain[i] = nodeChain[i] + "#" + commonAncestorElement.id
-        }
-        if (commonAncestorElement.classList.value) {
-          commonAncestorElement.classList.forEach(className => nodeChain[i] = nodeChain[i] + "." + className)
-        }
-        commonAncestorElement = commonAncestorElement.parentNode
-        i = i + 1
-      }
-      highlightText.nodeChain = nodeChain
-      // comtent,fhtno,lhtno
+      let highlight = {}
 
-      let nodeComment = []
+      highlight.cacSelector = this.getSelector(commonAncestorNode, "#document")
 
-      if (commonAncestorNode.nodeType === Node.TEXT_NODE) {
-        highlightText.startOffset = range.startOffset
-        highlightText.endOffset = range.endOffset
-        nodeComment = commonAncestorNode.nodeValue
-        // highlightText.content = nodeComment.slice(nodeComment.indexOf(highlightText.startOffset),nodeComment.indexOf(highlightText.endOffset))
-        highlightText.content = range.toString()
-      }
+      highlight.texts = this.getTextsIn(range, commonAncestorNode)
 
-      // id
-      highlightText.id = (Date.now()).toString(32)
+      highlight.id = (Date.now()).toString(32)
 
-      // data
-      let myDate = new Date()
-      highlightText.date = myDate.toLocaleString()
-      console.log(highlightText)
-
+      highlight.createTime = new Date().getTime()
+      console.log(highlight)
 
       // comments
 
@@ -95,11 +66,92 @@ class Toolbar extends React.PureComponent {
       this.props.dispatch({
         type: 'highlight/save',
         payload: {
-          [highlightText.id]: highlightText
+          [highlight.id]: highlight
         }
       })
     }
   }
+  // get hightlight.cacSelector
+  getSelector = (node, startNodeName) => {
+    let cacSelector = []
+    while (node.nodeType !== Node.ELEMENT_NODE) {
+      node = node.parentNode
+      if (!node) {
+        console.log("get hightlight.cacSelector error")
+      }
+    }
+    let i = 0
+    while (node && node.nodeName !== startNodeName) {
+      cacSelector[i] = new String()
+      cacSelector[i] = node.nodeName.toLocaleLowerCase()
+      if (node.id) {
+        cacSelector[i] = cacSelector[i] + "#" + node.id
+      }
+      if (node.classList.value) {
+        node.classList.forEach(className => cacSelector[i] = cacSelector[i] + "." + className)
+      }
+      node = node.parentNode
+      i = i + 1
+    }
+    return cacSelector
+  }
+
+  // get all the highlight textNode in commonAncestorNode
+  getTextsIn = (range, cANode) => {
+    let highlightText = {}
+    let texts = []
+    let startContainer = range.startContainer
+    let endContainer = range.endContainer
+    let startOffset = range.startOffset
+    let endOffset = range.endOffset
+
+    this.getTextNodesIn(cANode, startContainer, endContainer)
+
+    if (textNodes.length !== 0) {
+      if(textNodes.length === 1) {
+        texts[0] = this.getTextIn(cANode,textNodes[0], startOffset, endOffset)
+      } else {
+        texts[0] = this.getTextIn(cANode,textNodes[0], startOffset, textNodes[0].data.length)
+        texts[textNodes.length - 1] = this.getTextIn(cANode,textNodes[textNodes.length - 1], 0, endOffset)
+        for (var i = 1; i < textNodes.length-1; i++){
+          texts[i] = this.getTextIn(cANode,textNodes[i], 0,textNodes[0].data.length)
+        }
+      }
+    }
+    return texts
+  }
+
+  getTextNodesIn = (cANode, startContainer, endContainer) => {
+    if(cANode.childNodes.length !== 0){
+      for (var i = 0; i < cANode.childNodes.length; i++){
+        this.getTextNodesIn(cANode.childNodes[i], startContainer, endContainer)
+      }
+    } else if (cANode.nodeType === Node.TEXT_NODE) {
+      if(cANode === startContainer) {
+        highlightOn = 1
+      }
+      if(cANode === endContainer && cANode !== startContainer) {
+        highlightOn = 0
+      }
+      if(highlightOn || cANode === endContainer) {
+        textNodes.push(cANode)
+      }
+    }
+  }
+
+  getTextIn = (cANode,textNode, startOffset, endOffset) => {
+    let text = {}
+    text.startOffset = startOffset
+    text.endOffset = endOffset
+    text.text = textNode.data.slice(startOffset, endOffset)
+    if (cANode.nodeType === Node.TEXT_NODE){
+      text.subSelector = this.getSelector(textNode, cANode.parentNode.nodeName)
+    } else {
+      text.subSelector = this.getSelector(textNode, cANode.nodeName)
+    }
+    return text
+  }
+
 
   render() {
     // TODO: 渲染工具栏

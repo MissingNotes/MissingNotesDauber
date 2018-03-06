@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom'
 import {connect} from 'dva'
 import styles from './style.css'
 import highlightStyles from '../../handlehighlight.css'
-
+import Button from '../button'
 
 const highlightNoteClassName = highlightStyles.highlightNote
-const contextMenuDelete = styles.contextMenuDelete
 let highlightNote
+
 class Contextmenu extends React.Component {
   constructor(props){
     super(props)
@@ -96,21 +96,11 @@ class Contextmenu extends React.Component {
   // 2. 左键单击右键面板时，响应删除函数功能。
   clickListener = () => {
     document.addEventListener('click', (e) => {
-      let clickItem = this.clickInsideElement(e,contextMenuDelete)
-      if (clickItem){
-        e.preventDefault()
-        let highlightNoteId = highlightNote.classList[highlightNote.classList.length - 1]
-        highlightNoteId = highlightNoteId.slice(5)
-        this.props.dispatch({
-          type: 'highlight/remove',
-          payload: highlightNoteId
-        })
-      } else {
         var button = e.which || e.Button
         if (button === 1 ){
           this.toggleMenuOff()
         }
-      }
+      // }
     })
   }
 
@@ -136,11 +126,20 @@ class Contextmenu extends React.Component {
     this.menu.classList.remove(styles.contextMenuActive)
   }
 
+  handleDelete = () => {
+      let highlightNoteId = highlightNote.classList[highlightNote.classList.length - 1]
+      highlightNoteId = highlightNoteId.slice(5)
+      this.props.dispatch({
+        type: 'highlight/remove',
+        payload: highlightNoteId
+      })
+      this.toggleMenuOff()
+  }
 
   render() {
     return ReactDOM.createPortal(
       <div>
-        <button className={styles.contextMenuDelete}>Delete</button>
+        <Button onClick={this.handleDelete}>Delete</Button>
       </div>,
       this.menu,
     )
