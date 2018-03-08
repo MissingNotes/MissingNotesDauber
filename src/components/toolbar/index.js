@@ -126,7 +126,7 @@ class Toolbar extends React.PureComponent {
           texts[0] = this.getTextIn(cANode, textNodes[0], startOffset, textNodes[0].textContent.length)
           texts[textNodes.length - 1] = this.getTextIn(cANode, textNodes[textNodes.length - 1], 0, endOffset)
           for (var i = 1; i < textNodes.length - 1; i++) {
-            texts[i] = this.getTextIn(cANode, textNodes[i], 0, textNodes[0].textContent.length)
+            texts[i] = this.getTextIn(cANode, textNodes[i], 0, textNodes[i].textContent.length)
           }
         }
       }
