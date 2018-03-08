@@ -19,6 +19,7 @@ app.model(require('./models/highlight').default)
 app.router(() => <Toolbar />)
 
 // 5.Start
-const toolbarContainer = document.createElement("div", { id: "root" })
+const toolbarContainer = document.createElement("div")
+toolbarContainer.setAttribute("id", "root")
 document.body.appendChild(toolbarContainer)
 app.start('#root')

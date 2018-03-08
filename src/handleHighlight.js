@@ -4,14 +4,14 @@ let currentValue
 
 export default function handlehighlight(state) {
   let previousValue = currentValue
-  let highlightTextAdd = {}
-  let highlightTextDelete = {}
+  let highlightTextsAdd = {}
+  let highlightTextsDelete = {}
 
   if (state.highlight.toolbarOn === 1) {
     currentValue = state.highlight.highlightMap
     if (previousValue !== currentValue) {
       if (previousValue === undefined) {
-        highlightTextAdd = currentValue
+        highlightTextsAdd = currentValue
       } else {
         localStorage.setItem('highlightMap', JSON.stringify(currentValue))
         let keysPre = Object.keys(previousValue)
@@ -19,55 +19,60 @@ export default function handlehighlight(state) {
 
         keysPre.filter((item) => {
           if (!(keysCur.indexOf(item) > -1)) {
-            highlightTextDelete[item] = previousValue[item]
+            highlightTextsDelete[item] = previousValue[item]
           }
         })
         keysCur.filter((item) => {
           if (!(keysPre.indexOf(item) > -1)) {
-            highlightTextAdd[item] = currentValue[item]
+            highlightTextsAdd[item] = currentValue[item]
           }
         })
       }
       // 渲染新增加的highlightText
 
-      if (Object.keys(highlightTextAdd).length !== 0) {
-        const highlightTextArray = Object.values(highlightTextAdd)
-        highlightTextArray.forEach(function(highlightText) {
+      if (Object.keys(highlightTextsAdd).length !== 0) {
+        const highlightTextsArray = Object.values(highlightTextsAdd)
+        highlightTextsArray.forEach(function(highlight) {
 
-          // 找到高亮的数据所在的highlightText的父节点
-          let cacSelectorArray = highlightText.cacSelector.slice()
-          let baseElement = document.querySelector(cacSelectorArray.pop())
-          let commonAncestorNode = ''
-          while (cacSelectorArray.length) {
-            commonAncestorNode = baseElement.querySelector(cacSelectorArray.pop())
-            baseElement = commonAncestorNode
-          }
 
-          // 对parentNode里面的对应的数据进行高亮，用replace
-          let content = highlightText.content
-          let startOffset = highlightText.startOffset
-          let endOffset = highlightText.endOffset
-          if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
-            commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(content, '<span class="' + styles.highlightNote + ' node_'+ highlightText.id +'">' + content + '</span>')
-          }
+          // let cacSelectorArray = highlight.cacSelector.slice()
+          let id = highlight.id
+          highlight.texts.forEach(function(highlightText) {
+
+
+          //   // 找到高亮的数据所在的highlightText的父节点
+          let selectorArray = highlight.cacSelector.concat(highlightText.subSelector)
+          let highlightTextSelector = selectorArray.join('>')
+            let commonAncestorNode = document.querySelector(highlightTextSelector)
+
+            // 对parentNode里面的对应的数据进行高亮，用replace
+            let text = highlightText.text
+            let startOffset = highlightText.startOffset
+            let endOffset = highlightText.endOffset
+            if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
+              commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(text, '<span class="' + styles.highlightNote + ' node_' + id + '">' + text + '</span>')
+            }
+          })
         })
       }
 
       // 删除高亮数据
-      if (Object.keys(highlightTextDelete).length !== 0) {
-        const highlightTextArray = Object.values(highlightTextDelete)
-        highlightTextArray.forEach(function(highlightText) {
+      if (Object.keys(highlightTextsDelete).length !== 0) {
+        const highlightTextsArray = Object.values(highlightTextsDelete)
+        highlightTextsArray.forEach(function(highlight) {
 
-          let deleteNode = document.body.querySelector(".node_" + highlightText.id)
-          console.log(deleteNode)
+          highlight.texts.forEach(function(highlightText){
+          let deleteNode = document.body.querySelector(".node_" + highlight.id)
           let commonAncestorNode = deleteNode.parentNode
-          let content = highlightText.content
+
+          let text = highlightText.text
           let startOffset = highlightText.startOffset
           if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
             // commonAncestorNode.removeChild(deleteNode)
-            commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(deleteNode.outerHTML, content)
+            commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(deleteNode.outerHTML, text)
             // commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.slice(0, startOffset) + content + commonAncestorNode.innerHTML.slice(startOffset)
           }
+          })
         })
       }
     }
