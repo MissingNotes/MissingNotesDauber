@@ -21,5 +21,6 @@ app.router(() => <Toolbar />)
 // 5.Start
 const toolbarContainer = document.createElement("div")
 toolbarContainer.setAttribute("id", "root")
+// toolbarContainer.style.zIndex = 9999
 document.body.appendChild(toolbarContainer)
 app.start('#root')

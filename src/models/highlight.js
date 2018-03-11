@@ -12,6 +12,13 @@ type HighlightText = {
   subSelector: Array<string>,
 }
 
+type Selector = {
+  nodeName: string,
+  id : ?string,
+  classes: ?Array<string>,
+  // nthOfType: number,
+}
+
 type Highlight = {
   id: string,
   createTime: number,
@@ -19,7 +26,7 @@ type Highlight = {
   // node of the DOM `Element` specified by the `cacSelector`.
   texts: Array<HighlightText>,
   // `range.commonAncestorContainer` element's full selector from body element
-  cacSelector: Array<string>,
+  cacSelector: Array<Selector>,
 }
 
 type HighlightMap = {

@@ -86,7 +86,7 @@ class Contextmenu extends React.Component {
         this.toggleMenuOn();
         this.positionMenu(e);
       } else {
-        hilightNote = null;
+        highlightNote = null;
         this.toggleMenuOff();
       }
     });

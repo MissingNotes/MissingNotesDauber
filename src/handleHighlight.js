@@ -33,22 +33,37 @@ export default function handlehighlight(state) {
       if (Object.keys(highlightTextsAdd).length !== 0) {
         const highlightTextsArray = Object.values(highlightTextsAdd)
         highlightTextsArray.forEach(function(highlight) {
-
-
-          // let cacSelectorArray = highlight.cacSelector.slice()
           let id = highlight.id
+
           highlight.texts.forEach(function(highlightText) {
+            // 找到高亮的数据所在的highlightText的父节点
+            let selectorArray = highlight.cacSelector.concat(highlightText.subSelector)
 
+            let highlightTextSelector = ''
+            for(var i = 0; i < selectorArray.length; i++) {
+              highlightTextSelector = highlightTextSelector + selectorArray[i].nodeName
+              if(selectorArray[i].id) {
+                highlightTextSelector = highlightTextSelector  + "#" +  selectorArray[i].id
+              }
+              if(selectorArray[i].classes) {
+                selectorArray[i].classes.forEach((className) =>      highlightTextSelector = highlightTextSelector  + "." + className)
+              }
+              highlightTextSelector = highlightTextSelector + '>'
+              // highlightTextSelector = highlightTextSelector + ':nth-of-type(' + selectorArray[i].nthOfType + ')>'
+            }
 
-          //   // 找到高亮的数据所在的highlightText的父节点
-          let selectorArray = highlight.cacSelector.concat(highlightText.subSelector)
-          let highlightTextSelector = selectorArray.join('>')
-            let commonAncestorNode = document.querySelector(highlightTextSelector)
-
-            // 对parentNode里面的对应的数据进行高亮，用replace
+            let nodes = document.querySelectorAll(highlightTextSelector.slice(0,highlightTextSelector.length - 1))
             let text = highlightText.text
             let startOffset = highlightText.startOffset
             let endOffset = highlightText.endOffset
+            let commonAncestorNode
+
+            for(var i = 0; i < nodes.length; i++ ) {
+              if (nodes[i].innerText.indexOf(text) > -1) {
+                commonAncestorNode = nodes[i]
+              }
+            }
+
             if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
               commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(text, '<span class="' + styles.highlightNote + ' node_' + id + '">' + text + '</span>')
             }
