@@ -56,17 +56,34 @@ export default function handlehighlight(state) {
             let text = highlightText.text
             let startOffset = highlightText.startOffset
             let endOffset = highlightText.endOffset
-            let commonAncestorNode
+            let hightlightTextNode
 
-            for(var i = 0; i < nodes.length; i++ ) {
-              if (nodes[i].innerText.indexOf(text) > -1) {
-                commonAncestorNode = nodes[i]
+            for (var i = 0; i < nodes.length; i++ ) {
+              let node = nodes[i]
+              for (var j = 0; j < node.childNodes.length; j++) {
+                if (node.childNodes[j].nodeType === Node.TEXT_NODE) {
+                  if (node.childNodes[j].nodeValue.slice(startOffset,endOffset) === text) {
+                    hightlightTextNode = node.childNodes[j]
+                  }
+                }
               }
             }
+            let selectBF = document.createTextNode(hightlightTextNode.nodeValue.slice(0, startOffset))
 
-            if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
-              commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(text, '<span class="' + styles.highlightNote + ' node_' + id + '">' + text + '</span>')
-            }
+            let selectAF = document.createTextNode(hightlightTextNode.nodeValue.slice(endOffset))
+            let span = document.createElement('span')
+            span.innerHTML = text
+            span.classList.add(styles.highlightNote)
+            span.classList.add('node_' + id)
+
+            let fragment = document.createDocumentFragment()
+            fragment.appendChild(selectBF)
+            fragment.appendChild(span)
+            fragment.appendChild(selectAF)
+            hightlightTextNode.parentNode.replaceChild(fragment, hightlightTextNode)
+            // if (hightlightNode.nodeType === Node.ELEMENT_NODE) {
+              // hightlightNode.innerHTML = hightlightNode.innerHTML.replace(text, '<span class="' + styles.highlightNote + ' node_' + id + '">' + text + '</span>')
+            // }
           })
         })
       }
