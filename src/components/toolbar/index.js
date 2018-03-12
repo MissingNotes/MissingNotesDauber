@@ -30,7 +30,7 @@ class Toolbar extends React.PureComponent {
   }
 
   handleHighlight(event) {
-    if(this.setState.mode === 'highlight'){
+    if(this.state.mode === 'highlight'){
       this.setState({mode: 'none'})
     }
     else {
@@ -77,6 +77,8 @@ class Toolbar extends React.PureComponent {
             [highlight.id]: highlight
           }
         })
+
+        selection.removeAllRanges()
       }
     }
   }
@@ -199,7 +201,9 @@ class Toolbar extends React.PureComponent {
     // TODO: 渲染工具栏
     return (
       <div className={styles.toolbar}>
-        <Button onClick={this.handleHighlight}>
+        <Button onClick={this.handleHighlight}
+          active={this.state.mode === "highlight"}>
+        {/* <Button onClick={this.handleHighlight}> */}
           高亮文本
         </Button>
         <Button onClick={this.handleAddStickyNode}>

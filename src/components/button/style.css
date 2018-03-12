@@ -15,18 +15,20 @@
   margin-right: 10px;
 }
 
-.btn:hover {
-  color: #d7dae0;
-  background-color: #3a3f4b;
-  background-image: linear-gradient(#3e4451, #3a3f4b);
-}
-
 .btn:focus {
   color: #d7dae0;
   background-color: #3a3f4b;
   background-image: linear-gradient(#3e4451, #3a3f4b);
 }
 
-.btn:active {
+.btn:active,
+.btn.active {
+  color: #7b7d80;
   background: #2c313a;
+}
+
+.btn:hover {
+  color: #d7dae0 !important;
+  background-color: #3a3f4b;
+  background-image: linear-gradient(#3e4451, #3a3f4b);
 }

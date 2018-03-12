@@ -40,31 +40,45 @@ export default function handlehighlight(state) {
             let selectorArray = highlight.cacSelector.concat(highlightText.subSelector)
 
             let highlightTextSelector = ''
-            for(var i = 0; i < selectorArray.length; i++) {
+            for (var i = 0; i < selectorArray.length; i++) {
               highlightTextSelector = highlightTextSelector + selectorArray[i].nodeName
-              if(selectorArray[i].id) {
-                highlightTextSelector = highlightTextSelector  + "#" +  selectorArray[i].id
+              if (selectorArray[i].id) {
+                highlightTextSelector = highlightTextSelector + "#" + selectorArray[i].id
               }
-              if(selectorArray[i].classes) {
-                selectorArray[i].classes.forEach((className) =>      highlightTextSelector = highlightTextSelector  + "." + className)
+              if (selectorArray[i].classes) {
+                selectorArray[i].classes.forEach((className) => highlightTextSelector = highlightTextSelector + "." + className)
               }
               highlightTextSelector = highlightTextSelector + '>'
               // highlightTextSelector = highlightTextSelector + ':nth-of-type(' + selectorArray[i].nthOfType + ')>'
             }
 
-            let nodes = document.querySelectorAll(highlightTextSelector.slice(0,highlightTextSelector.length - 1))
+            let nodes = document.querySelectorAll(highlightTextSelector.slice(0, highlightTextSelector.length - 1))
             let text = highlightText.text
             let startOffset = highlightText.startOffset
             let endOffset = highlightText.endOffset
+            let identicalContentNodes  = []
             let hightlightTextNode
 
-            for (var i = 0; i < nodes.length; i++ ) {
+            for (var i = 0; i < nodes.length; i++) {
               let node = nodes[i]
               for (var j = 0; j < node.childNodes.length; j++) {
                 if (node.childNodes[j].nodeType === Node.TEXT_NODE) {
-                  if (node.childNodes[j].nodeValue.slice(startOffset,endOffset) === text) {
-                    hightlightTextNode = node.childNodes[j]
+                  if (node.childNodes[j].nodeValue.slice(startOffset, endOffset) === text) {
+                    identicalContentNodes.push(node.childNodes[j])
                   }
+                }
+              }
+            }
+            for (var i = 0; i < identicalContentNodes.length; i++) {
+              if (identicalContentNodes[i].parentNode.classList === undefined) {
+                hightlightTextNode = identicalContentNodes[i]
+                break
+              }
+              else {
+                var classes = Array.prototype.slice.call(identicalContentNodes[i].parentNode.classList)
+                if( classes.indexOf('node_' + id) === -1) {
+                  hightlightTextNode = identicalContentNodes[i]
+                  break
                 }
               }
             }
@@ -82,7 +96,7 @@ export default function handlehighlight(state) {
             fragment.appendChild(selectAF)
             hightlightTextNode.parentNode.replaceChild(fragment, hightlightTextNode)
             // if (hightlightNode.nodeType === Node.ELEMENT_NODE) {
-              // hightlightNode.innerHTML = hightlightNode.innerHTML.replace(text, '<span class="' + styles.highlightNote + ' node_' + id + '">' + text + '</span>')
+            // hightlightNode.innerHTML = hightlightNode.innerHTML.replace(text, '<span class="' + styles.highlightNote + ' node_' + id + '">' + text + '</span>')
             // }
           })
         })
@@ -90,21 +104,22 @@ export default function handlehighlight(state) {
 
       // 删除高亮数据
       if (Object.keys(highlightTextsDelete).length !== 0) {
-        const highlightTextsArray = Object.values(highlightTextsDelete)
-        highlightTextsArray.forEach(function(highlight) {
+        const deleteTextsArray = Object.values(highlightTextsDelete)
+        const deleteTexts = deleteTextsArray[0]
+        // let deleteTextsInNode = document.body.querySelector(".node_" + deleteTexts.id)
 
-          highlight.texts.forEach(function(highlightText){
-          let deleteNode = document.body.querySelector(".node_" + highlight.id)
+        deleteTexts.texts.forEach(function(deleteText) {
+
+          let deleteNode = document.body.querySelector(".node_" + deleteTexts.id)
           let commonAncestorNode = deleteNode.parentNode
 
-          let text = highlightText.text
-          let startOffset = highlightText.startOffset
+          let text = deleteText.text
+          let startOffset = deleteText.startOffset
           if (commonAncestorNode.nodeType === Node.ELEMENT_NODE) {
             // commonAncestorNode.removeChild(deleteNode)
             commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.replace(deleteNode.outerHTML, text)
             // commonAncestorNode.innerHTML = commonAncestorNode.innerHTML.slice(0, startOffset) + content + commonAncestorNode.innerHTML.slice(startOffset)
           }
-          })
         })
       }
     }
