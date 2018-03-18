@@ -1,6 +1,6 @@
 # Missing Notes Dauber
 
-##笔记工具MissingNotes的实现难点亮点
+## 笔记工具MissingNotes的实现难点亮点
 
 **怎么实现把笔记工具注入到任意浏览器的任意页面的？**
 浏览器插件需要特定于某个浏览器，暂时不用。从常见的<a href="javascript: void 0"></a>得到启发，给浏览器添加书签，书签URL是javascript:协议，后面是一段JS代码，即可给当前页面加载一个JS文件，里面实现的就是笔记工具。
