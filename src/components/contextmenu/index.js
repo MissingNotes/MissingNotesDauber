@@ -20,7 +20,6 @@ class Contextmenu extends React.Component {
 
   // 监听高亮信息的右键事件，弹出删除面板
   componentDidMount() {
-
     document.body.appendChild(this.menu)
     this.contextListener()
     this.clickListener()
@@ -28,7 +27,7 @@ class Contextmenu extends React.Component {
   }
 
   componentWillUnmount() {
-    modalRoot.removeChild(this.menu);
+    document.body.removeChild(this.menu);
   }
 
   // 筛选右键事件监听目标
