@@ -4,9 +4,6 @@ import Button from '../button'
 import {connect} from 'dva'
 import Contextmenu from '../contextmenu'
 
-// let textNodes = []
-let highlightOn = 0
-
 class Toolbar extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -17,6 +14,7 @@ class Toolbar extends React.PureComponent {
       mode: 'none'
     }
   }
+
   componentDidMount() {
     this.props.dispatch({
       type: 'highlight/toolbarOn',
@@ -24,9 +22,11 @@ class Toolbar extends React.PureComponent {
         toolbarOn: 1
       }
     })
+    document.body.addEventListener('mouseup', this.handleMouseup, false)
+  }
 
-    document.body.addEventListener('mouseup', this.handleMouseup)
-
+  componentWillUnmount() {
+    document.body.removeEventListener("mouseup", this.handleMouseup, false);
   }
 
   handleHighlight(event) {
@@ -34,6 +34,8 @@ class Toolbar extends React.PureComponent {
       this.setState({mode: 'none'})
     }
     else {
+      const selection = window.getSelection()
+      selection.removeAllRanges()
       this.setState({mode: 'highlight'})
     }
   }
@@ -47,7 +49,7 @@ class Toolbar extends React.PureComponent {
       let win = event.view
       let selection = win.getSelection()
       if (selection.isCollapsed) {
-        console.log("selection.isCollapsed")
+        return
       }
 
       let range = selection.getRangeAt(0)

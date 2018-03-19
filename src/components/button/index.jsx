@@ -11,6 +11,7 @@ export default class Button extends React.PureComponent{
         }
         onClick={this.props.onClick}
         style={this.props.style}
+        tabIndex="0"
       >
         {this.props.children}
       </span>
